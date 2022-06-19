@@ -12,25 +12,25 @@ CONFIG += c++17 console
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
+        gui/mainwindow.cpp \
         model/ingredientdto.cpp \
         model/receiptdto.cpp \
         model/userproductsdto.cpp \
-        receiptdescription.cpp \
+        gui/receiptdescription.cpp \
         receiptservice.cpp \
         sqlservice.cpp \
         viewservice.cpp
 
 FORMS += \
-    mainwindow.ui \
-    receiptdescription.ui
+    gui/mainwindow.ui \
+    gui/receiptdescription.ui
 
 HEADERS += \
-    mainwindow.h \
+    gui/mainwindow.h \
     model/ingredientdto.h \
     model/receiptdto.h \
     model/userproductsdto.h \
-    receiptdescription.h \
+    gui/receiptdescription.h \
     receiptservice.h \
     sqlservice.h \
     viewservice.h

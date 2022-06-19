@@ -2,9 +2,6 @@
 #define RECEIPTSERVICE_H
 #include <QObject>
 #include "sqlservice.h"
-//#include "model/receiptdto.h"
-//#include "model/ingredientdto.h"
-//#include "model/userproductsdto.h"
 
 class ReceiptService : public QObject
 {
@@ -12,6 +9,7 @@ class ReceiptService : public QObject
 public:
     ReceiptService();
     QString getReceiptById(int id);
+    QList<UserProductsDto> getUserProductsDto();
 
 private:
     SqlService *service;

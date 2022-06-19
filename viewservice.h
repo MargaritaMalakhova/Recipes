@@ -2,8 +2,8 @@
 #define VIEWSERVICE_H
 #include <QObject>
 
-#include "mainwindow.h"
-#include "receiptdescription.h"
+#include "gui/mainwindow.h"
+#include "gui/receiptdescription.h"
 #include "receiptservice.h"
 
 class ViewService : public QObject
@@ -17,6 +17,7 @@ signals:
 
 private slots:
     void on_showReceiptSgn(int recptId);
+    void on_getAllUserProducts();
 
 private:
     MainWindow *window;
