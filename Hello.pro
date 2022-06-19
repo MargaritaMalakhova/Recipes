@@ -13,6 +13,9 @@ CONFIG += c++17 console
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
+        model/ingredientdto.cpp \
+        model/receiptdto.cpp \
+        model/userproductsdto.cpp \
         receiptdescription.cpp \
         receiptservice.cpp \
         sqlservice.cpp \
@@ -24,6 +27,9 @@ FORMS += \
 
 HEADERS += \
     mainwindow.h \
+    model/ingredientdto.h \
+    model/receiptdto.h \
+    model/userproductsdto.h \
     receiptdescription.h \
     receiptservice.h \
     sqlservice.h \

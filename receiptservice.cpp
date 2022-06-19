@@ -7,6 +7,9 @@ ReceiptService::ReceiptService()
 
 QString ReceiptService::getReceiptById(int id)
 {
-    QString text = "string for receipt " + QString::number(id);
+   ReceiptDto receipt = service->getReceiptById(id);
+
+   // QString text = "string for receipt " + QString::number(id);
+    QString text = receipt.description;
     return text;
 }
