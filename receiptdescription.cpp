@@ -12,3 +12,8 @@ ReceiptDescription::~ReceiptDescription()
 {
     delete ui;
 }
+
+void ReceiptDescription::on_showReceipt(QString receipt)
+{
+    ui->description->setText(receipt);
+}

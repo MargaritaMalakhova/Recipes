@@ -15,6 +15,9 @@ public:
     explicit ReceiptDescription(QWidget *parent = nullptr);
     ~ReceiptDescription();
 
+public slots:
+    void on_showReceipt(QString receipt);
+
 private:
     Ui::ReceiptDescription *ui;
 };

@@ -27,7 +27,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Jhhh&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="ingrFridgeTab">
      <property name="toolTip">
@@ -87,7 +87,7 @@
        <string>Посмотреть рецепт</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="receiptID">
+     <widget class="QLineEdit" name="showReceiptId">
       <property name="geometry">
        <rect>
         <x>50</x>
@@ -125,7 +125,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLineEdit" name="receiptId">
+     <widget class="QLineEdit" name="cookReceiptId">
       <property name="geometry">
        <rect>
         <x>60</x>

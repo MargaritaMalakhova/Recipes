@@ -19,24 +19,11 @@
      <x>20</x>
      <y>20</y>
      <width>351</width>
-     <height>461</height>
+     <height>481</height>
     </rect>
    </property>
    <property name="readOnly">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="exitButton">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>490</y>
-     <width>75</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Закрыть</string>
    </property>
   </widget>
  </widget>

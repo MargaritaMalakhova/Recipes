@@ -1,10 +1,12 @@
-#include <QCoreApplication>
-#include <QtLabel>
+#include <QApplication>
+#include "viewservice.h"
+#include "mainwindow.h"
+
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-    qDebug() << "Hello World";
+    ViewService master;
 
     return a.exec();
 }
