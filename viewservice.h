@@ -18,6 +18,7 @@ signals:
 private slots:
     void on_showReceiptSgn(int recptId);
     void on_getAllUserProducts();
+    void on_getAllReceipts();
 
 private:
     MainWindow *window;

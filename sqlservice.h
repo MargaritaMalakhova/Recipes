@@ -17,7 +17,7 @@ public:
 
     ReceiptDto getReceiptById(int id);
     void getIngridientsByReceiptId(int id);
-    void getUserProducts();
+    QList<UserProductsDto> getUserProducts();
 
 private:
     QSqlDatabase dbase;

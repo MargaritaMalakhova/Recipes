@@ -36,3 +36,27 @@ ReceiptDto SqlService::getReceiptById(int id)
 
     return  result;
 }
+
+QList<UserProductsDto> SqlService::getUserProducts()
+{
+    qDebug() << "QList<UserProductsDto> SqlService::getUserProducts()";
+    QList<UserProductsDto> userProductsList;
+    QSqlQuery a_query;
+
+    QString query = "SELECT ID_field, name_ing, amount_ing, name_measure "
+                    "FROM (ings_in_fridge INNER JOIN ings ON ings_in_fridge.ID_ing = ings.ID_ing) "
+                    "INNER JOIN measures ON ings.ID_measure = measures.ID_measure";
+    a_query.exec(query);
+    QSqlRecord rec = a_query.record();
+
+    while (a_query.next())
+    {
+        UserProductsDto userProduct;
+        userProduct.id = a_query.value(rec.indexOf("ID_field")).toInt();
+        userProduct.name = a_query.value(rec.indexOf("name_ing")).toString();
+        userProduct.amount = a_query.value(rec.indexOf("amount_ing")).toInt();
+        userProduct.measureName = a_query.value(rec.indexOf("name_measure")).toString();
+        userProductsList.append(userProduct);
+    }
+    return userProductsList;
+}
