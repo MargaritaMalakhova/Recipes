@@ -7,11 +7,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //связывает сигналы от кнопок с необходимыми слотами
     connect(
         ui->showRecptBtn, &QPushButton::clicked,
         this, &MainWindow::showRecptBtn_clicked
     );
 
+    connect(
+        ui->addIngrButton, &QPushButton::clicked,
+        this, &MainWindow::addIngrButton_clicked
+    );
+
+    //сигналы и слоты вкладок
     connect(
         ui->tabWidget, &QTabWidget::currentChanged,
         this, &MainWindow::chooseWidget
@@ -37,6 +44,16 @@ void MainWindow::initShow()
 void MainWindow::cleanIngrFridgeTab()
 {
     ui->ingrTabWdgt->setRowCount(0);
+}
+
+void MainWindow::cleanAllReceiptsTab()
+{
+    ui->recpTblWdgt->setRowCount(0);
+}
+
+void MainWindow::cleanAvailableReceiptsTable()
+{
+    ui->availableReceiptsTable->setRowCount(0);
 }
 
 void MainWindow::drawIngrFridgeTab()
@@ -121,6 +138,29 @@ void MainWindow::addRowToIngrFridgeTab(int index, int id, QString name, int coun
 
 }
 
+void MainWindow::addRowToAllReceiptsTab(int index, int id, QString name)
+{
+     ui->recpTblWdgt->insertRow(index);
+
+     qDebug() << "addRowToAllReceiptsTab" << QString::number(index) << QString::number(id) << name;
+
+     // Далее забираем все данные из результата запроса и устанавливаем в остальные поля
+     ui->recpTblWdgt->setItem(index,0, new QTableWidgetItem(QString::number(id)));
+     ui->recpTblWdgt->setItem(index,1, new QTableWidgetItem(name));
+}
+
+void MainWindow::addRowToAvailableReceiptsTab(int index, int id, QString name, int amountPorsion)
+{
+     ui->availableReceiptsTable->insertRow(index);
+
+     qDebug() << "addRowToAvailableReceiptsTab" << QString::number(index) << QString::number(id) << name << QString::number(amountPorsion);
+
+     // Далее забираем все данные из результата запроса и устанавливаем в остальные поля
+     ui->availableReceiptsTable->setItem(index,0, new QTableWidgetItem(QString::number(id)));
+     ui->availableReceiptsTable->setItem(index,1, new QTableWidgetItem(name));
+     ui->availableReceiptsTable->setItem(index,2, new QTableWidgetItem(QString::number(amountPorsion)));
+}
+
 //SLOTS---------------------------------------------------------------------------------------------------
 void MainWindow::showRecptBtn_clicked()
 {
@@ -128,6 +168,11 @@ void MainWindow::showRecptBtn_clicked()
 
     recptIdValue = ui->showReceiptId->text();
     emit showReceipt(recptIdValue.toInt());
+}
+
+void MainWindow::addIngrButton_clicked()
+{
+    emit showAddProductsWindow();
 }
 
 void MainWindow::chooseWidget(int index)
@@ -141,6 +186,8 @@ void MainWindow::chooseWidget(int index)
             emit getAllReceipts();
             break;
         case 2:
+            emit getAvailableReceipes();
             break;
     }
 }
+

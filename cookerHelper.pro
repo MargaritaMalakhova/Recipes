@@ -11,8 +11,10 @@ CONFIG += c++17 console
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        gui/addproducttofridge.cpp \
         main.cpp \
         gui/mainwindow.cpp \
+        model/availablereceiptdto.cpp \
         model/ingredientdto.cpp \
         model/receiptdto.cpp \
         model/userproductsdto.cpp \
@@ -22,11 +24,14 @@ SOURCES += \
         viewservice.cpp
 
 FORMS += \
+    gui/addproducttofridge.ui \
     gui/mainwindow.ui \
     gui/receiptdescription.ui
 
 HEADERS += \
+    gui/addproducttofridge.h \
     gui/mainwindow.h \
+    model/availablereceiptdto.h \
     model/ingredientdto.h \
     model/receiptdto.h \
     model/userproductsdto.h \

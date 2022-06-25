@@ -8,6 +8,7 @@
 #include "model/receiptdto.h"
 #include "model/ingredientdto.h"
 #include "model/userproductsdto.h"
+#include "model/availablereceiptdto.h"
 
 class SqlService : public QObject
 {
@@ -16,8 +17,10 @@ public:
     SqlService();
 
     ReceiptDto getReceiptById(int id);
-    void getIngridientsByReceiptId(int id);
+    void getIngridientsByReceiptId(int id);//переделать на QList
     QList<UserProductsDto> getUserProducts();
+    QList<ReceiptDto> getAllReceipts();
+    void insertProductToFridge(QString product, int count);
 
 private:
     QSqlDatabase dbase;

@@ -8,9 +8,13 @@ class ReceiptService : public QObject
     Q_OBJECT
 public:
     ReceiptService();
-    QString getReceiptById(int id);
+    QString getReceiptDescriptionById(int id);
     QList<UserProductsDto> getUserProductsDto();
-
+    QList<ReceiptDto> getAllReceiptsDto();
+    QStringList getAllIngredients();
+    void insertProductToFridge(QString product, int count);
+    QList<AvailableReceiptDto> getAvailableReceipts();
+    AvailableReceiptDto convertor(ReceiptDto receiptDto, int amountPorsion);
 private:
     SqlService *service;
 };
