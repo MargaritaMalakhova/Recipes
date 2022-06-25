@@ -12,6 +12,7 @@ public:
     {
         id = other.id;
         name = other.name;
+        amount = other.amount;
         measureName = other.measureName;
 
         return (*this);
@@ -19,6 +20,7 @@ public:
 
     int id;
     QString name;
+    int amount;
     QString measureName;
 };
 

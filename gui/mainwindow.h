@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QApplication>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -31,11 +32,13 @@ signals:
     void getAllReceipts();
     void showAddProductsWindow();
     void getAvailableReceipes();
+    void letsCook(int id,int count);
 
 private slots:
     void showRecptBtn_clicked();
     void chooseWidget(int index);
     void addIngrButton_clicked();
+    void letsCookBtn_clicked();
 
 private:
     void drawIngrFridgeTab();

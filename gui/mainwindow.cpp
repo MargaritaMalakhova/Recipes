@@ -7,21 +7,35 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->spinBox->setMinimum(1);
+
+
     //связывает сигналы от кнопок с необходимыми слотами
     connect(
         ui->showRecptBtn, &QPushButton::clicked,
         this, &MainWindow::showRecptBtn_clicked
     );
 
+    //сигналы от вкладки рецептов
     connect(
         ui->addIngrButton, &QPushButton::clicked,
         this, &MainWindow::addIngrButton_clicked
     );
 
-    //сигналы и слоты вкладок
+    connect(
+        ui->recpTblWdgt, &QTableWidget::itemDoubleClicked,
+        this, &MainWindow::showRecptBtn_clicked
+    );
+
+    //сигналы и слоты выбора вкладок
     connect(
         ui->tabWidget, &QTabWidget::currentChanged,
         this, &MainWindow::chooseWidget
+    );
+
+    connect(
+        ui->letsCookBtn, &QPushButton::clicked,
+        this, &MainWindow::letsCookBtn_clicked
     );
 }
 
@@ -79,7 +93,7 @@ void MainWindow::drawIngrFridgeTab()
     ui->ingrTabWdgt->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
 
     // Скрываем колонку под номером 0
-    //ui->tableWidget->hideColumn(0);
+    //ui->ingrTabWdgt->setColumnWidth(0,0);
 
 
 }
@@ -101,6 +115,9 @@ void MainWindow::drawAllRecipes()
     //автоматическое растягивание таблички
     ui->recpTblWdgt->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->recpTblWdgt->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+
+    // Скрываем колонку под номером 0
+    //ui->recpTblWdgt->setColumnWidth(0,0);
 }
 
 void MainWindow::drawAvailableRecipes()
@@ -121,14 +138,19 @@ void MainWindow::drawAvailableRecipes()
     //автоматическое растягивание таблички
     ui->availableReceiptsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->availableReceiptsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->availableReceiptsTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->availableReceiptsTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+
+    // Скрываем колонку под номером 0
+   // ui->availableReceiptsTable->setColumnWidth(0,0);
+    //ui->availableReceiptsTable->setColumnHidden(0,true);
 }
 
 void MainWindow::addRowToIngrFridgeTab(int index, int id, QString name, int count, QString measure)
 {
      ui->ingrTabWdgt->insertRow(index);
 
-     qDebug() << "addRowToIngrFridgeTab" << QString::number(index) << QString::number(id) << name;
+     //qDebug() << "addRowToIngrFridgeTab" << QString::number(index) << QString::number(id) << name;
 
      // Далее забираем все данные из результата запроса и устанавливаем в остальные поля
      ui->ingrTabWdgt->setItem(index,0, new QTableWidgetItem(QString::number(id)));
@@ -142,7 +164,7 @@ void MainWindow::addRowToAllReceiptsTab(int index, int id, QString name)
 {
      ui->recpTblWdgt->insertRow(index);
 
-     qDebug() << "addRowToAllReceiptsTab" << QString::number(index) << QString::number(id) << name;
+     //qDebug() << "addRowToAllReceiptsTab" << QString::number(index) << QString::number(id) << name;
 
      // Далее забираем все данные из результата запроса и устанавливаем в остальные поля
      ui->recpTblWdgt->setItem(index,0, new QTableWidgetItem(QString::number(id)));
@@ -153,7 +175,7 @@ void MainWindow::addRowToAvailableReceiptsTab(int index, int id, QString name, i
 {
      ui->availableReceiptsTable->insertRow(index);
 
-     qDebug() << "addRowToAvailableReceiptsTab" << QString::number(index) << QString::number(id) << name << QString::number(amountPorsion);
+     //qDebug() << "addRowToAvailableReceiptsTab" << QString::number(index) << QString::number(id) << name << QString::number(amountPorsion);
 
      // Далее забираем все данные из результата запроса и устанавливаем в остальные поля
      ui->availableReceiptsTable->setItem(index,0, new QTableWidgetItem(QString::number(id)));
@@ -164,10 +186,15 @@ void MainWindow::addRowToAvailableReceiptsTab(int index, int id, QString name, i
 //SLOTS---------------------------------------------------------------------------------------------------
 void MainWindow::showRecptBtn_clicked()
 {
-    QString recptIdValue;
+    QList<QTableWidgetItem *> list = ui->recpTblWdgt->selectedItems();
 
-    recptIdValue = ui->showReceiptId->text();
-    emit showReceipt(recptIdValue.toInt());
+    if (list.size()>0)
+    {
+        QString id = list.at(0)->text();
+        qDebug() << "MainWindow::showRecptBtn_clicked() from table" << id;
+        emit showReceipt(id.toInt());
+    }
+    else { qDebug() << "MainWindow::showRecptBtn_clicked() from table" << "Row is not selected";}
 }
 
 void MainWindow::addIngrButton_clicked()
@@ -183,7 +210,11 @@ void MainWindow::chooseWidget(int index)
             emit getAllUserProducts();
             break;
         case 1:
-            emit getAllReceipts();
+            if (ui->recpTblWdgt->rowCount() == 0)
+            {
+                qDebug() << "emit getAllReceipts();!!!";
+                emit getAllReceipts();
+            }
             break;
         case 2:
             emit getAvailableReceipes();
@@ -191,3 +222,39 @@ void MainWindow::chooseWidget(int index)
     }
 }
 
+void MainWindow::letsCookBtn_clicked()
+{
+    //поискать другой метод вместо selectedItem или не скрывать Id
+    QList<QTableWidgetItem *> list = ui->availableReceiptsTable->selectedItems();
+    QMessageBox msgBox;
+    QString message;
+    bool warning = false;
+
+    qDebug() << "void MainWindow::letsCookBtn_clicked() list.size()=" << QString::number(list.size());
+    if (list.size()>0)
+    {
+        QString id = list.at(0)->text();
+        int count = ui->spinBox->value();
+        int maxCount = list.at(2)->text().toInt();
+
+        if (count <= maxCount) {
+            qDebug() << "MainWindow::letsCookBtn_clicked() from table" << id;
+            emit letsCook(id.toInt(),count);
+        } else {
+            message = "Заданное количество порций не может быть больше доступного";
+            warning = true;
+        }
+    }
+    else {
+        qDebug() << "MainWindow::letsCookBtn_clicked() from table" << "Row is not selected";
+        message = "Выберите рецепт из списка";
+        warning = true;
+    }
+
+    if (warning)
+    {
+        msgBox.setWindowTitle("Предупреждение");
+        msgBox.setText(message);
+        msgBox.exec();
+    }
+}

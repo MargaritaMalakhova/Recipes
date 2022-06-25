@@ -11,6 +11,7 @@ ViewService::ViewService()
     connect(window,SIGNAL(getAllReceipts()),this, SLOT(on_getAllReceipts()));
     connect(window,SIGNAL(showAddProductsWindow()), this, SLOT(on_showAddProductsWindow()));
     connect(window,SIGNAL(getAvailableReceipes()), this, SLOT(on_getAvailableReceipes()));
+    connect(window,SIGNAL(letsCook(int,int)),this, SLOT(on_letsCook(int,int)));
 
     emit window->getAllUserProducts();
     window->show();
@@ -99,3 +100,15 @@ void ViewService::on_getAvailableReceipes()
     }
 }
 
+void ViewService::on_letsCook(int receiptId, int count)
+{
+    qDebug() << "void ViewService::on_letsCook(int receiptId, int count)";
+    service->cookReceipts(receiptId, count);
+
+    on_getAvailableReceipes();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Сообщение");
+    msgBox.setText("Рецепт в количестве " + QString::number(count) + " порций приготовлен.");
+    msgBox.exec();
+}

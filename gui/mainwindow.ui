@@ -14,178 +14,128 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>771</width>
-      <height>531</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Jhhh&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="currentIndex">
-     <number>2</number>
-    </property>
-    <widget class="QWidget" name="ingrFridgeTab">
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ewter&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <attribute name="title">
-      <string>Продукты в холодильнике</string>
-     </attribute>
-     <widget class="QTableWidget" name="ingrTabWdgt">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>741</width>
-        <height>441</height>
-       </rect>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Jhhh&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="ingrFridgeTab">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ewter&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <attribute name="title">
+        <string>Продукты в холодильнике</string>
+       </attribute>
+       <widget class="QTableWidget" name="ingrTabWdgt">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>741</width>
+          <height>441</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="addIngrButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>460</y>
+          <width>75</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Добавить</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="listOfReceipts">
+       <attribute name="title">
+        <string>Список рецептов</string>
+       </attribute>
+       <widget class="QTableWidget" name="recpTblWdgt">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>741</width>
+          <height>441</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="showRecptBtn">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>470</y>
+          <width>191</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Посмотреть рецепт</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="availableReceipts">
+       <attribute name="title">
+        <string>Доступные блюда</string>
+       </attribute>
+       <widget class="QTableWidget" name="availableReceiptsTable">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>731</width>
+          <height>451</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="letsCookBtn">
+        <property name="geometry">
+         <rect>
+          <x>274</x>
+          <y>470</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Приготовить</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>470</y>
+          <width>111</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Количество порций</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>470</y>
+          <width>51</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="addIngrButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>460</y>
-        <width>75</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Добавить</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="listOfReceipts">
-     <attribute name="title">
-      <string>Список рецептов</string>
-     </attribute>
-     <widget class="QTableWidget" name="recpTblWdgt">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>741</width>
-        <height>441</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="showRecptBtn">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>470</y>
-        <width>191</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Посмотреть рецепт</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="showReceiptId">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>470</y>
-        <width>21</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>470</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>id:</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="availableReceipts">
-     <attribute name="title">
-      <string>Доступные блюда</string>
-     </attribute>
-     <widget class="QTableWidget" name="availableReceiptsTable">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>731</width>
-        <height>451</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="cookReceiptId">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>470</y>
-        <width>31</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="portionsNumber">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>470</y>
-        <width>31</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="letsCookBtn">
-      <property name="geometry">
-       <rect>
-        <x>274</x>
-        <y>470</y>
-        <width>81</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Приготовить</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>470</y>
-        <width>21</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>id:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>470</y>
-        <width>111</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Количество порций</string>
-      </property>
-     </widget>
-    </widget>
-   </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

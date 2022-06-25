@@ -15,6 +15,8 @@ public:
     void insertProductToFridge(QString product, int count);
     QList<AvailableReceiptDto> getAvailableReceipts();
     AvailableReceiptDto convertor(ReceiptDto receiptDto, int amountPorsion);
+    void cookReceipts(int receiptId, int count);
+
 private:
     SqlService *service;
 };

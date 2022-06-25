@@ -5,12 +5,20 @@ ReceiptService::ReceiptService()
     service = new SqlService();
 }
 
-QString ReceiptService::getReceiptDescriptionById(int id)
+QString ReceiptService::getReceiptDescriptionById(int receiptId)
 {
-    ReceiptDto receipt = service->getReceiptById(id);
-//TODO: добавить логику вывода ингредиентов рецепта
-    QString text = receipt.description;
-    return text;
+    ReceiptDto receipt = service->getReceiptById(receiptId);
+       QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(receiptId);
+       QString receiptText = "";
+       receiptText = receiptText + "Ингредиенты для рецепта " + "\""+receipt.name + + "\":  \n";
+       for(int i = 0; i < ingredients.size(); i++) {
+          IngredientDto ingredient = ingredients.at(i);
+          qDebug() <<  ingredient.name + " " + QString::number(ingredient.amount) + " "  + ingredient.measureName;
+          receiptText = receiptText + ingredient.name + " " + QString::number(ingredient.amount) + " "  + ingredient.measureName + "\n";
+       }
+
+    receiptText = receiptText  + "\n" + receipt.description;
+    return receiptText;
 }
 
 QList<UserProductsDto> ReceiptService::getUserProductsDto()
@@ -28,11 +36,14 @@ QList<ReceiptDto> ReceiptService::getAllReceiptsDto()
 QStringList ReceiptService::getAllIngredients()
 {
     QStringList ingredientAndMesuare;
+    QList<IngredientDto> ingredients = service->getAllIngredients();
 //TODO: добавить логику вывода списка ингредиентов и его меру из БД
-    IngredientDto ingrDto;
+    for (int i = 0; i < ingredients.size(); i++) {
+         IngredientDto ingrDto = ingredients.at(i);
+         ingredientAndMesuare.append(ingrDto.name + " (" +ingrDto.measureName+ ")");
+    }
 
-    ingredientAndMesuare.append("Яблоко (Грамм)");
-    ingredientAndMesuare.append("Яйцо (Штуки)");
+
 
     return ingredientAndMesuare;
 }
@@ -58,8 +69,6 @@ QList<AvailableReceiptDto> ReceiptService::getAvailableReceipts()
 {
     qDebug() << "QList<ReceiptDto> ReceiptService::getAllReceiptsDto()";
     QList<ReceiptDto> receipts = service->getAllReceipts();
-      //в цикле преобразовать дто
-      //получить и вернуть новый лист
     QList<AvailableReceiptDto> availableReceipts;
      for (int i = 0; i < receipts.size(); i++)
      {
@@ -69,4 +78,25 @@ QList<AvailableReceiptDto> ReceiptService::getAvailableReceipts()
      }
     return availableReceipts;
 
+}
+
+void ReceiptService::cookReceipts(int receiptId, int count)
+{
+    qDebug() << "void ReceiptService::cookReceipts(int receiptId, int count)" << receiptId << " " << count;
+    QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(receiptId);
+    QList<UserProductsDto> allProducts = service->getUserProducts();
+    for(int i = 0; i<ingredients.size(); i++) {
+        IngredientDto ingredient = ingredients.at(i);
+        int countToDelete = ingredient.amount * count;
+        UserProductsDto toUpdate;
+        for(int j = 0; j<allProducts.size(); j++) {
+            UserProductsDto product = allProducts.at(j);
+            if(ingredient.name == product.name) {
+                toUpdate = product;
+                break;
+            }
+        }
+        int ingredientLeft = toUpdate.amount - countToDelete;
+        service->updateUserProductAmount(toUpdate.id, ingredientLeft);
+    }
 }

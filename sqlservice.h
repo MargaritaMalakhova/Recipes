@@ -21,6 +21,9 @@ public:
     QList<UserProductsDto> getUserProducts();
     QList<ReceiptDto> getAllReceipts();
     void insertProductToFridge(QString product, int count);
+    QList<IngredientDto> getIngredientsByReceiptId(int receiptId);
+    QList<IngredientDto> getAllIngredients();
+    void updateUserProductAmount(int productId, int IngredientLeft);
 
 private:
     QSqlDatabase dbase;
