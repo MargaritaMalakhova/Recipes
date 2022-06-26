@@ -25,6 +25,7 @@ public:
     void addRowToIngrFridgeTab(int index, int id, QString name, int count, QString measure);
     void addRowToAllReceiptsTab(int index, int id, QString name);
     void addRowToAvailableReceiptsTab(int index, int id, QString name, int amountPorsion);
+    void hasBeenCooked(int count);
 
 signals:
     void showReceipt(int recptId);
@@ -39,6 +40,7 @@ private slots:
     void chooseWidget(int index);
     void addIngrButton_clicked();
     void letsCookBtn_clicked();
+    void availableReceiptsTable_clicked();
 
 private:
     void drawIngrFridgeTab();

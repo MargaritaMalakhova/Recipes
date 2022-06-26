@@ -27,6 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
         this, &MainWindow::showRecptBtn_clicked
     );
 
+    connect(
+        ui->availableReceiptsTable, &QTableWidget::itemDoubleClicked,
+        this, &MainWindow::availableReceiptsTable_clicked
+    );
+
     //сигналы и слоты выбора вкладок
     connect(
         ui->tabWidget, &QTabWidget::currentChanged,
@@ -81,7 +86,7 @@ void MainWindow::drawIngrFridgeTab()
     ui->ingrTabWdgt->setColumnCount(4);
     ui->ingrTabWdgt->setShowGrid(true);
     //выделение выделение одного элемента
-    ui->ingrTabWdgt->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->ingrTabWdgt->setSelectionMode(QAbstractItemView::NoSelection);
     // Разрешаем выделение построчно
     ui->ingrTabWdgt->setSelectionBehavior(QAbstractItemView::SelectRows);
     // Устанавливаем заголовки колонок
@@ -91,6 +96,8 @@ void MainWindow::drawIngrFridgeTab()
     ui->ingrTabWdgt->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->ingrTabWdgt->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     ui->ingrTabWdgt->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+
+    ui->ingrTabWdgt->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // Скрываем колонку под номером 0
     //ui->ingrTabWdgt->setColumnWidth(0,0);
@@ -183,6 +190,14 @@ void MainWindow::addRowToAvailableReceiptsTab(int index, int id, QString name, i
      ui->availableReceiptsTable->setItem(index,2, new QTableWidgetItem(QString::number(amountPorsion)));
 }
 
+void MainWindow::hasBeenCooked(int count)
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Сообщение");
+    msgBox.setText("Рецепт в количестве " + QString::number(count) + " порций приготовлен.");
+    msgBox.exec();
+}
+
 //SLOTS---------------------------------------------------------------------------------------------------
 void MainWindow::showRecptBtn_clicked()
 {
@@ -192,6 +207,19 @@ void MainWindow::showRecptBtn_clicked()
     {
         QString id = list.at(0)->text();
         qDebug() << "MainWindow::showRecptBtn_clicked() from table" << id;
+        emit showReceipt(id.toInt());
+    }
+    else { qDebug() << "MainWindow::showRecptBtn_clicked() from table" << "Row is not selected";}
+}
+
+void MainWindow::availableReceiptsTable_clicked()
+{
+    QList<QTableWidgetItem *> list = ui->availableReceiptsTable->selectedItems();
+
+    if (list.size()>0)
+    {
+        QString id = list.at(0)->text();
+        qDebug() << "void MainWindow::availableReceiptsTable_clicked() from table" << id;
         emit showReceipt(id.toInt());
     }
     else { qDebug() << "MainWindow::showRecptBtn_clicked() from table" << "Row is not selected";}

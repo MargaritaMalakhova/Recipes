@@ -5,7 +5,11 @@ AddProductToFridgeWindow::AddProductToFridgeWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddProductToFridgeWindow)
 {
+    QValidator *validator = new QIntValidator(0, 999999, this);
     ui->setupUi(this);
+    //ui->lineEdit->setInputMask("9");
+    ui->lineEdit->setValidator(validator);
+
     ui->comboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(
         this, &QDialog::accepted,

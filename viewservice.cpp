@@ -40,7 +40,7 @@ void ViewService::on_showReceiptSgn(int recptId)
 void ViewService:: on_getAllUserProducts()
 {
     qDebug() << "void ViewService::on_getAllUserProducts()";
-    QList<UserProductsDto> products = service->getUserProductsDto();
+    QList<UserProductsDto> products = service->getUserProducts();
 
     window->cleanIngrFridgeTab();
 
@@ -53,7 +53,7 @@ void ViewService:: on_getAllUserProducts()
 void ViewService::on_getAllReceipts()
 {
     qDebug() << "void ViewService::on_getAllReceipts()";
-    QList<ReceiptDto> receipts = service->getAllReceiptsDto();
+    QList<ReceiptDto> receipts = service->getAllReceipts();
 
     window->cleanAllReceiptsTab();
 
@@ -68,8 +68,8 @@ void ViewService::on_showAddProductsWindow()
     qDebug() << "void ViewService::on_showAddProductsWindow()";
     AddProductWindow = new AddProductToFridgeWindow();
 
-    QStringList ingredients = service->getAllIngredients();
-    AddProductWindow->addIngredientToComboBox(ingredients);
+    QStringList ingredientsWithMeasure = service->getAllIngredientsWithMeasure();
+    AddProductWindow->addIngredientToComboBox(ingredientsWithMeasure);
 
     connect(
         AddProductWindow, &AddProductToFridgeWindow::OkClickAddProduct,
@@ -107,8 +107,5 @@ void ViewService::on_letsCook(int receiptId, int count)
 
     on_getAvailableReceipes();
 
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Сообщение");
-    msgBox.setText("Рецепт в количестве " + QString::number(count) + " порций приготовлен.");
-    msgBox.exec();
+    window->hasBeenCooked(count);
 }

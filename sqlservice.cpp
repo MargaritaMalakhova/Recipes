@@ -46,7 +46,7 @@ QList<IngredientDto> SqlService::getIngredientsByReceiptId(int receiptId)
     QString query = "SELECT ings.ID, ings.name, amount_ings, measures.name "
                     "FROM (measures INNER JOIN ings ON measures.ID = ings.measures_ID) "
                     "INNER JOIN ings_to_recipes ON ings.ID = ings_to_recipes.ings_ID "
-                    "WHERE recipes_ID = %1";
+                    "WHERE recipes_ID = %1 ";
     QString finalSQL = query.arg(receiptId);
 
     qDebug() << finalSQL;
@@ -75,7 +75,8 @@ QList<IngredientDto> SqlService::getAllIngredients() {
 
     QString query = "SELECT ings.ID, ings.name, amount_ings, measures.name "
                     "FROM (measures INNER JOIN ings ON measures.ID = ings.measures_ID) "
-                    "INNER JOIN ings_to_recipes ON ings.ID = ings_to_recipes.ings_ID ";
+                    "INNER JOIN ings_to_recipes ON ings.ID = ings_to_recipes.ings_ID "
+                    "ORDER BY 2";
 
     qDebug() << query;
 
@@ -106,7 +107,8 @@ QList<UserProductsDto> SqlService::getUserProducts()
     QString query = "SELECT ings_in_fridge.ID, ings.name, amount_ing, measures.name "
                     "FROM (ings_in_fridge INNER JOIN ings ON ings_in_fridge.ings_ID = ings.ID) "
                     "INNER JOIN measures ON ings.measures_ID = measures.ID "
-                    "WHERE amount_ing > 0";
+                    "WHERE amount_ing > 0 "
+                    "ORDER BY 2";
     a_query.exec(query);
     QSqlRecord rec = a_query.record();
 
@@ -128,7 +130,32 @@ QList<ReceiptDto> SqlService::getAllReceipts()
     QList<ReceiptDto> receiptsList;
     QSqlQuery a_query;
 
-    QString query = "SELECT * FROM recipes";
+    QString query = "SELECT * FROM recipes "
+                    "ORDER BY 2";
+    a_query.exec(query);
+    QSqlRecord rec = a_query.record();
+
+    while (a_query.next())
+    {
+        ReceiptDto receipt;
+        receipt.id = a_query.value(rec.indexOf("ID")).toInt();
+        receipt.description = a_query.value(rec.indexOf("discription")).toString();
+        receipt.name = a_query.value(rec.indexOf("name")).toString();
+        receiptsList.append(receipt);
+    }
+    return receiptsList;
+}
+
+QList<ReceiptDto> SqlService::getAllReceiptsWithAvailableIngredients()
+{
+    qDebug() << "QList<ReceiptDto> SqlService::getAllReceiptsWithAvailableIngredients()";
+    QList<ReceiptDto> receiptsList;
+    QSqlQuery a_query;
+
+    QString query = "SELECT * FROM recipes WHERE ID NOT IN ("
+                        "SELECT DISTINCT recipes_ID FROM ings_to_recipes WHERE ings_ID NOT IN ("
+                            "SELECT ings_ID FROM ings_in_fridge WHERE amount_ing > 0)) "
+                    "ORDER BY 2";
     a_query.exec(query);
     QSqlRecord rec = a_query.record();
 
@@ -145,8 +172,8 @@ QList<ReceiptDto> SqlService::getAllReceipts()
 
 void SqlService::insertProductToFridge(QString product, int count) {
     qDebug() << "SqlService::insertProductToFridge()";
-    QString query = "INSERT INTO ings_in_fridge (ings_ID, amount_ing) "
-            "VALUES ('" + product + "', "+QString::number(count)+")";
+    QString query = "UPDATE ings_in_fridge  SET amount_ing = amount_ing+" + QString::number(count) +
+            " WHERE ings_ID = (SELECT ID from ings WHERE name = '" + product + "');";
     qDebug() << query;
 
     QSqlQuery a_query;

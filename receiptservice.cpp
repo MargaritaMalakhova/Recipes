@@ -9,8 +9,7 @@ QString ReceiptService::getReceiptDescriptionById(int receiptId)
 {
     ReceiptDto receipt = service->getReceiptById(receiptId);
        QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(receiptId);
-       QString receiptText = "";
-       receiptText = receiptText + "Ингредиенты для рецепта " + "\""+receipt.name + + "\":  \n";
+       QString receiptText =  "Ингредиенты для рецепта \"" + receipt.name + "\":  \n";
        for(int i = 0; i < ingredients.size(); i++) {
           IngredientDto ingredient = ingredients.at(i);
           qDebug() <<  ingredient.name + " " + QString::number(ingredient.amount) + " "  + ingredient.measureName;
@@ -21,63 +20,35 @@ QString ReceiptService::getReceiptDescriptionById(int receiptId)
     return receiptText;
 }
 
-QList<UserProductsDto> ReceiptService::getUserProductsDto()
+QList<UserProductsDto> ReceiptService::getUserProducts()
 {
        qDebug() << "QList<UserProductsDto> ReceiptService::getUserProductsDto()";
        return service->getUserProducts();
 }
 
-QList<ReceiptDto> ReceiptService::getAllReceiptsDto()
+QList<ReceiptDto> ReceiptService::getAllReceipts()
 {
        qDebug() << "QList<ReceiptDto> ReceiptService::getAllReceiptsDto()";
        return service->getAllReceipts();
 }
 
-QStringList ReceiptService::getAllIngredients()
+QStringList ReceiptService::getAllIngredientsWithMeasure()
 {
     QStringList ingredientAndMesuare;
     QList<IngredientDto> ingredients = service->getAllIngredients();
-//TODO: добавить логику вывода списка ингредиентов и его меру из БД
     for (int i = 0; i < ingredients.size(); i++) {
          IngredientDto ingrDto = ingredients.at(i);
          ingredientAndMesuare.append(ingrDto.name + " (" +ingrDto.measureName+ ")");
     }
-
-
 
     return ingredientAndMesuare;
 }
 
 void ReceiptService::insertProductToFridge(QString product, int count)
 {
-    service->insertProductToFridge(product, count);
-}
-
-AvailableReceiptDto ReceiptService::convertor(ReceiptDto receiptDto, int amountPorsion)
-{
-    AvailableReceiptDto availableReceipt;
-    availableReceipt.id = receiptDto.id;
-    availableReceipt.name = receiptDto.name;
-    availableReceipt.description = "Просто описание";
-    availableReceipt.amountPorsion = amountPorsion;
-
-    return availableReceipt;
-}
-
-
-QList<AvailableReceiptDto> ReceiptService::getAvailableReceipts()
-{
-    qDebug() << "QList<ReceiptDto> ReceiptService::getAllReceiptsDto()";
-    QList<ReceiptDto> receipts = service->getAllReceipts();
-    QList<AvailableReceiptDto> availableReceipts;
-     for (int i = 0; i < receipts.size(); i++)
-     {
-        AvailableReceiptDto availableReceipt;
-        availableReceipt = convertor(receipts.at(i), 2+i);
-        availableReceipts.append(availableReceipt);
-     }
-    return availableReceipts;
-
+    QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
+    qDebug() << "ReceiptService::insertProductToFridge(QString product, int count): " << trimmedProduct;
+    service->insertProductToFridge(trimmedProduct, count);
 }
 
 void ReceiptService::cookReceipts(int receiptId, int count)
@@ -99,4 +70,56 @@ void ReceiptService::cookReceipts(int receiptId, int count)
         int ingredientLeft = toUpdate.amount - countToDelete;
         service->updateUserProductAmount(toUpdate.id, ingredientLeft);
     }
+}
+
+QList<AvailableReceiptDto> ReceiptService::getAvailableReceipts()
+{
+    qDebug() << "QList<ReceiptDto> ReceiptService::getAvailableReceipts()";
+    QList<ReceiptDto> receipts = service->getAllReceiptsWithAvailableIngredients();
+    QList<AvailableReceiptDto> availableReceipts;
+    QList<UserProductsDto> userProducts = getUserProducts();
+
+    for (int i = 0; i < receipts.size(); i++) {
+        ReceiptDto currentReceipt = receipts.at(i);
+        QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(currentReceipt.id);
+        int availableCount = 99999;
+        for (int j = 0; j < ingredients.size(); j++) {
+            if(availableCount == 0) {
+                break;
+            }
+            int count = 0;
+            IngredientDto ingredient = ingredients.at(j);
+            for(int k = 0; k < userProducts.size(); k++) {
+                UserProductsDto userProduct = userProducts.at(k);
+                if(userProduct.name == ingredient.name) {
+                    count = userProduct.amount/ingredient.amount;
+                    if(count < availableCount) {
+                        availableCount = count;
+                    }
+                    break;
+                }
+                if(k == userProducts.size()-1){
+                   availableCount = 0;
+                }
+            }
+        }
+
+        if (availableCount > 0) {
+            AvailableReceiptDto availableReceipt = convertReceiptDtoToAvailableReceiptDto(currentReceipt, availableCount);
+            availableReceipts.append(availableReceipt);
+        }
+     }
+    return availableReceipts;
+
+}
+
+AvailableReceiptDto ReceiptService::convertReceiptDtoToAvailableReceiptDto(ReceiptDto receiptDto, int amountPorsion)
+{
+    AvailableReceiptDto availableReceipt;
+    availableReceipt.id = receiptDto.id;
+    availableReceipt.name = receiptDto.name;
+    availableReceipt.description = receiptDto.description;
+    availableReceipt.amountPorsion = amountPorsion;
+
+    return availableReceipt;
 }

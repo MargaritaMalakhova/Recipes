@@ -20,6 +20,7 @@ public:
     void getIngridientsByReceiptId(int id);//переделать на QList
     QList<UserProductsDto> getUserProducts();
     QList<ReceiptDto> getAllReceipts();
+    QList<ReceiptDto> getAllReceiptsWithAvailableIngredients();
     void insertProductToFridge(QString product, int count);
     QList<IngredientDto> getIngredientsByReceiptId(int receiptId);
     QList<IngredientDto> getAllIngredients();
