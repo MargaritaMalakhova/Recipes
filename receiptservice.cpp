@@ -44,12 +44,42 @@ QStringList ReceiptService::getAllIngredientsWithMeasure()
     return ingredientAndMesuare;
 }
 
-void ReceiptService::insertProductToFridge(QString product, int count)
+QStringList ReceiptService::getAllUserProductNamesWithMeasure()
 {
-    QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
-    qDebug() << "ReceiptService::insertProductToFridge(QString product, int count): " << trimmedProduct;
-    service->insertProductToFridge(trimmedProduct, count);
+    QStringList productNames;
+    QList<UserProductsDto> userProducts = getUserProducts();
+
+    for (int i = 0; i < userProducts.size(); i++) {
+         UserProductsDto userProductDto = userProducts.at(i);
+         productNames.append(userProductDto.name + " (" +userProductDto.measureName+ ")");
+    }
+
+    return productNames;
 }
+
+
+
+void ReceiptService::insertProductToFridge(QString productName, int count)
+{
+    qDebug() << "ReceiptService::insertProductToFridge(QString productName, int count): " << productName;
+    service->insertProductToFridge(productName, count);
+}
+
+QString ReceiptService::removeProductFromFridge(QString productName, int countToDelete)
+{
+    qDebug() << "ReceiptService::removeProductFromFridge(QString productName, int count): " << productName;
+    UserProductsDto product = service->getUserProductByName(productName);
+    if(product.amount < countToDelete) {
+        return "Вы пытаетесь убрать из холодильника продукта "+ product.name +
+                " больше, чем там есть.\n\nДоступное количество: " + QString::number(product.amount) +
+                ".\nВы пытаетесь убрать " + QString::number(countToDelete) +
+                ".\n\nПересмотрите возможности вашего холодильника.";
+
+    }
+    service->removeProductFromFridgeByProductName(productName, countToDelete);
+    return "";
+}
+
 
 void ReceiptService::cookReceipts(int receiptId, int count)
 {
@@ -67,8 +97,7 @@ void ReceiptService::cookReceipts(int receiptId, int count)
                 break;
             }
         }
-        int ingredientLeft = toUpdate.amount - countToDelete;
-        service->updateUserProductAmount(toUpdate.id, ingredientLeft);
+        service->removeProductFromFridge(toUpdate.id, countToDelete);
     }
 }
 

@@ -24,12 +24,14 @@ AddProductToFridgeWindow::~AddProductToFridgeWindow()
 
 void AddProductToFridgeWindow::addIngredientToComboBox(QStringList ingredients)
 {
+    ui->comboBox->clear();
     ui->comboBox->addItems(ingredients);
 }
 
 void AddProductToFridgeWindow::addProductToFridgeOkHandler()
 {
     qDebug() << "AddProductToFridgeWindow::addProductToFridgeOkHandler()!!!!!";
+    //ui->
     QString product = ui->comboBox->currentText();
     int count = ui->lineEdit->text().toInt();
 

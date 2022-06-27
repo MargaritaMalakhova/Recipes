@@ -22,9 +22,12 @@ private slots:
     void on_getAllUserProducts();
     void on_getAllReceipts();
     void on_showAddProductsWindow();
+    void on_showRemoveProductsWindow();
     void addProductToFridgeOkHandler(QString product, int count);
+    void removeProductToFridgeOkHandler(QString product, int count);
     void on_getAvailableReceipes();
     void on_letsCook(int,int);
+
 
 private:
     MainWindow *window;

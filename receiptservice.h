@@ -12,9 +12,11 @@ public:
     QList<UserProductsDto> getUserProducts();
     QList<ReceiptDto> getAllReceipts();
     QStringList getAllIngredientsWithMeasure();
-    void insertProductToFridge(QString product, int count);
+    QStringList getAllUserProductNamesWithMeasure();
+    void insertProductToFridge(QString productName, int count);
     QList<AvailableReceiptDto> getAvailableReceipts();
     void cookReceipts(int receiptId, int count);
+    QString removeProductFromFridge(QString productName, int countToDelete);
 
 private:
     AvailableReceiptDto convertReceiptDtoToAvailableReceiptDto(ReceiptDto receiptDto, int amountPorsion);

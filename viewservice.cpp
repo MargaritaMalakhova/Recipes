@@ -10,6 +10,7 @@ ViewService::ViewService()
     connect(window,SIGNAL(getAllUserProducts()),this, SLOT(on_getAllUserProducts()));
     connect(window,SIGNAL(getAllReceipts()),this, SLOT(on_getAllReceipts()));
     connect(window,SIGNAL(showAddProductsWindow()), this, SLOT(on_showAddProductsWindow()));
+    connect(window,SIGNAL(showRemoveProductsWindow()), this, SLOT(on_showRemoveProductsWindow()));
     connect(window,SIGNAL(getAvailableReceipes()), this, SLOT(on_getAvailableReceipes()));
     connect(window,SIGNAL(letsCook(int,int)),this, SLOT(on_letsCook(int,int)));
 
@@ -79,12 +80,42 @@ void ViewService::on_showAddProductsWindow()
     AddProductWindow->show();
 }
 
+void ViewService::on_showRemoveProductsWindow()
+{
+    qDebug() << "void ViewService::on_showAddProductsWindow()";
+    AddProductWindow = new AddProductToFridgeWindow();
+
+    QStringList ingredientsWithMeasure = service->getAllUserProductNamesWithMeasure();
+    AddProductWindow->addIngredientToComboBox(ingredientsWithMeasure);
+
+    connect(
+        AddProductWindow, &AddProductToFridgeWindow::OkClickAddProduct,
+        this, &ViewService::removeProductToFridgeOkHandler
+    );
+
+    AddProductWindow->show();
+}
+
 void ViewService::addProductToFridgeOkHandler(QString product, int count)
 {
     qDebug() << "void ViewService::addProductToFridgeOkHandler(QString product, int count)";
     qDebug() << product << QString::number(count);
-    service->insertProductToFridge(product, count);
+    QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
+    service->insertProductToFridge(trimmedProduct, count);
     on_getAllUserProducts();
+}
+
+void ViewService::removeProductToFridgeOkHandler(QString product, int count)
+{
+    qDebug() << "ViewService::removeProductToFridgeOkHandler(QString product, int count)";
+    qDebug() << product << QString::number(count);
+    QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
+    QString message = service->removeProductFromFridge(trimmedProduct, count);
+    if(message.isEmpty()) {
+        on_getAllUserProducts();
+    } else {
+        window->showErrorMessage(message);
+    }
 }
 
 void ViewService::on_getAvailableReceipes()

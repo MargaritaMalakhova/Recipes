@@ -42,6 +42,12 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->letsCookBtn, &QPushButton::clicked,
         this, &MainWindow::letsCookBtn_clicked
     );
+
+    //сигналы от вкладки рецептов
+    connect(
+        ui->removeIngrButton, &QPushButton::clicked,
+        this, &MainWindow::removeIngrButton_clicked
+    );
 }
 
 MainWindow::~MainWindow()
@@ -198,6 +204,16 @@ void MainWindow::hasBeenCooked(int count)
     msgBox.exec();
 }
 
+
+//TODO придумать нормальное название
+void MainWindow::showErrorMessage(QString msg)
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Сообщение");
+    msgBox.setText(msg);
+    msgBox.exec();
+}
+
 //SLOTS---------------------------------------------------------------------------------------------------
 void MainWindow::showRecptBtn_clicked()
 {
@@ -228,6 +244,11 @@ void MainWindow::availableReceiptsTable_clicked()
 void MainWindow::addIngrButton_clicked()
 {
     emit showAddProductsWindow();
+}
+
+void MainWindow::removeIngrButton_clicked()
+{
+    emit showRemoveProductsWindow();
 }
 
 void MainWindow::chooseWidget(int index)

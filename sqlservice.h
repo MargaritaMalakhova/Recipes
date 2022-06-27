@@ -19,12 +19,14 @@ public:
     ReceiptDto getReceiptById(int id);
     void getIngridientsByReceiptId(int id);//переделать на QList
     QList<UserProductsDto> getUserProducts();
+    UserProductsDto getUserProductByName(QString productName);
     QList<ReceiptDto> getAllReceipts();
     QList<ReceiptDto> getAllReceiptsWithAvailableIngredients();
     void insertProductToFridge(QString product, int count);
     QList<IngredientDto> getIngredientsByReceiptId(int receiptId);
     QList<IngredientDto> getAllIngredients();
-    void updateUserProductAmount(int productId, int IngredientLeft);
+    void removeProductFromFridge(int productId, int count);
+    void removeProductFromFridgeByProductName(QString productName, int count);
 
 private:
     QSqlDatabase dbase;

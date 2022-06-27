@@ -21,7 +21,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ingrFridgeTab">
        <property name="toolTip">
@@ -45,12 +45,25 @@
          <rect>
           <x>10</x>
           <y>460</y>
-          <width>75</width>
+          <width>231</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>Добавить</string>
+         <string>Добавить продукт в холодильник</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="removeIngrButton">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>460</y>
+          <width>231</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Убрать продукт из холодильника</string>
         </property>
        </widget>
       </widget>
