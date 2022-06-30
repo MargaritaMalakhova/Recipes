@@ -180,8 +180,7 @@ QList<ReceiptDto> SqlService::getAllReceiptsWithAvailableIngredients()
 
     QString query = "SELECT * FROM recipes WHERE ID NOT IN ("
                         "SELECT DISTINCT recipes_ID FROM ings_to_recipes WHERE ings_ID NOT IN ("
-                            "SELECT ings_ID FROM ings_in_fridge WHERE amount_ing > 0)) "
-                    "ORDER BY 2";
+                            "SELECT ings_ID FROM ings_in_fridge WHERE amount_ing > 0)) ";
     a_query.exec(query);
     QSqlRecord rec = a_query.record();
 
@@ -210,7 +209,7 @@ void SqlService::insertProductToFridge(QString product, int count) {
 void SqlService::removeProductFromFridge(int productId, int count) {
     qDebug() << "void SqlService::updateUserProductAmount(int productId, int IngredientLeft);";
     QString query = "";
-    query = "UPDATE ings_in_fridge SET amount_ing = amount_ing+" + QString::number(count) + " WHERE ID = " + QString::number(productId);
+    query = "UPDATE ings_in_fridge SET amount_ing = amount_ing-" + QString::number(count) + " WHERE ID = " + QString::number(productId);
 
     qDebug() << query;
 

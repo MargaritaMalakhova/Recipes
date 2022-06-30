@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Добавление ингредиента</string>
+   <string>Изменить ингредиент</string>
   </property>
   <property name="toolTipDuration">
    <number>1</number>

@@ -2,13 +2,13 @@
 
 ReceiptService::ReceiptService()
 {
-    service = new SqlService();
+    sqlService = new SqlService();
 }
 
 QString ReceiptService::getReceiptDescriptionById(int receiptId)
 {
-    ReceiptDto receipt = service->getReceiptById(receiptId);
-       QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(receiptId);
+    ReceiptDto receipt = sqlService->getReceiptById(receiptId);
+       QList<IngredientDto> ingredients = sqlService->getIngredientsByReceiptId(receiptId);
        QString receiptText =  "Ингредиенты для рецепта \"" + receipt.name + "\":  \n";
        for(int i = 0; i < ingredients.size(); i++) {
           IngredientDto ingredient = ingredients.at(i);
@@ -23,19 +23,19 @@ QString ReceiptService::getReceiptDescriptionById(int receiptId)
 QList<UserProductsDto> ReceiptService::getUserProducts()
 {
        qDebug() << "QList<UserProductsDto> ReceiptService::getUserProductsDto()";
-       return service->getUserProducts();
+       return sqlService->getUserProducts();
 }
 
 QList<ReceiptDto> ReceiptService::getAllReceipts()
 {
        qDebug() << "QList<ReceiptDto> ReceiptService::getAllReceiptsDto()";
-       return service->getAllReceipts();
+       return sqlService->getAllReceipts();
 }
 
 QStringList ReceiptService::getAllIngredientsWithMeasure()
 {
     QStringList ingredientAndMesuare;
-    QList<IngredientDto> ingredients = service->getAllIngredients();
+    QList<IngredientDto> ingredients = sqlService->getAllIngredients();
     for (int i = 0; i < ingredients.size(); i++) {
          IngredientDto ingrDto = ingredients.at(i);
          ingredientAndMesuare.append(ingrDto.name + " (" +ingrDto.measureName+ ")");
@@ -62,13 +62,13 @@ QStringList ReceiptService::getAllUserProductNamesWithMeasure()
 void ReceiptService::insertProductToFridge(QString productName, int count)
 {
     qDebug() << "ReceiptService::insertProductToFridge(QString productName, int count): " << productName;
-    service->insertProductToFridge(productName, count);
+    sqlService->insertProductToFridge(productName, count);
 }
 
 QString ReceiptService::removeProductFromFridge(QString productName, int countToDelete)
 {
     qDebug() << "ReceiptService::removeProductFromFridge(QString productName, int count): " << productName;
-    UserProductsDto product = service->getUserProductByName(productName);
+    UserProductsDto product = sqlService->getUserProductByName(productName);
     if(product.amount < countToDelete) {
         return "Вы пытаетесь убрать из холодильника продукта "+ product.name +
                 " больше, чем там есть.\n\nДоступное количество: " + QString::number(product.amount) +
@@ -76,7 +76,7 @@ QString ReceiptService::removeProductFromFridge(QString productName, int countTo
                 ".\n\nПересмотрите возможности вашего холодильника.";
 
     }
-    service->removeProductFromFridgeByProductName(productName, countToDelete);
+    sqlService->removeProductFromFridgeByProductName(productName, countToDelete);
     return "";
 }
 
@@ -84,12 +84,13 @@ QString ReceiptService::removeProductFromFridge(QString productName, int countTo
 void ReceiptService::cookReceipts(int receiptId, int count)
 {
     qDebug() << "void ReceiptService::cookReceipts(int receiptId, int count)" << receiptId << " " << count;
-    QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(receiptId);
-    QList<UserProductsDto> allProducts = service->getUserProducts();
+    QList<IngredientDto> ingredients = sqlService->getIngredientsByReceiptId(receiptId);
+    QList<UserProductsDto> allProducts = sqlService->getUserProducts();
     for(int i = 0; i<ingredients.size(); i++) {
         IngredientDto ingredient = ingredients.at(i);
         int countToDelete = ingredient.amount * count;
         UserProductsDto toUpdate;
+        //bИщем продукт соответствующий ингредиенту
         for(int j = 0; j<allProducts.size(); j++) {
             UserProductsDto product = allProducts.at(j);
             if(ingredient.name == product.name) {
@@ -97,25 +98,33 @@ void ReceiptService::cookReceipts(int receiptId, int count)
                 break;
             }
         }
-        service->removeProductFromFridge(toUpdate.id, countToDelete);
+        //
+        sqlService->removeProductFromFridge(toUpdate.id, countToDelete);
     }
 }
 
 QList<AvailableReceiptDto> ReceiptService::getAvailableReceipts()
 {
     qDebug() << "QList<ReceiptDto> ReceiptService::getAvailableReceipts()";
-    QList<ReceiptDto> receipts = service->getAllReceiptsWithAvailableIngredients();
+    QList<ReceiptDto> receipts = sqlService->getAllReceiptsWithAvailableIngredients();
+
+    //новая коллекция для доступных рецептов
     QList<AvailableReceiptDto> availableReceipts;
+
+    //Все продукты в холодильнике
     QList<UserProductsDto> userProducts = getUserProducts();
 
     for (int i = 0; i < receipts.size(); i++) {
         ReceiptDto currentReceipt = receipts.at(i);
-        QList<IngredientDto> ingredients = service->getIngredientsByReceiptId(currentReceipt.id);
+
+        //Список ингредиентов для текущего рецепта
+        QList<IngredientDto> ingredients = sqlService->getIngredientsByReceiptId(currentReceipt.id);
         int availableCount = 99999;
         for (int j = 0; j < ingredients.size(); j++) {
             if(availableCount == 0) {
                 break;
             }
+            //подсчет порций только по данному ингредиенту
             int count = 0;
             IngredientDto ingredient = ingredients.at(j);
             for(int k = 0; k < userProducts.size(); k++) {

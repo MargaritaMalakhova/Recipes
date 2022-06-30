@@ -20,7 +20,7 @@ public:
 
 private:
     AvailableReceiptDto convertReceiptDtoToAvailableReceiptDto(ReceiptDto receiptDto, int amountPorsion);
-    SqlService *service;
+    SqlService *sqlService;
 };
 
 #endif // RECEIPTSERVICE_H

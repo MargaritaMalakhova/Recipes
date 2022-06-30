@@ -33,7 +33,7 @@ private:
     MainWindow *window;
     ReceiptDescription *receiptWindow;
     AddProductToFridgeWindow *AddProductWindow;
-    ReceiptService *service;
+    ReceiptService *receiptService;
 };
 
 #endif // VIEWSERVICE_H

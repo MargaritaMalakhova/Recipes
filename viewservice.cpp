@@ -2,7 +2,9 @@
 
 ViewService::ViewService()
 {
-    service = new ReceiptService();
+    receiptService = new ReceiptService();
+
+    //Создание и показ главного окна
     window = new MainWindow();
     window->initShow();
 
@@ -20,7 +22,7 @@ ViewService::ViewService()
 
 ViewService::~ViewService()
 {
-    delete service;
+    delete receiptService;
     delete window;
 }
 
@@ -29,7 +31,7 @@ void ViewService::on_showReceiptSgn(int recptId)
 {
     QString receiptText;
 
-    receiptText=service->getReceiptDescriptionById(recptId);
+    receiptText=receiptService->getReceiptDescriptionById(recptId);
 
     receiptWindow = new ReceiptDescription();
     connect(this,SIGNAL(showTextReceipt(QString)),receiptWindow,SLOT(on_showReceipt(QString)));
@@ -41,7 +43,7 @@ void ViewService::on_showReceiptSgn(int recptId)
 void ViewService:: on_getAllUserProducts()
 {
     qDebug() << "void ViewService::on_getAllUserProducts()";
-    QList<UserProductsDto> products = service->getUserProducts();
+    QList<UserProductsDto> products = receiptService->getUserProducts();
 
     window->cleanIngrFridgeTab();
 
@@ -54,7 +56,7 @@ void ViewService:: on_getAllUserProducts()
 void ViewService::on_getAllReceipts()
 {
     qDebug() << "void ViewService::on_getAllReceipts()";
-    QList<ReceiptDto> receipts = service->getAllReceipts();
+    QList<ReceiptDto> receipts = receiptService->getAllReceipts();
 
     window->cleanAllReceiptsTab();
 
@@ -69,7 +71,7 @@ void ViewService::on_showAddProductsWindow()
     qDebug() << "void ViewService::on_showAddProductsWindow()";
     AddProductWindow = new AddProductToFridgeWindow();
 
-    QStringList ingredientsWithMeasure = service->getAllIngredientsWithMeasure();
+    QStringList ingredientsWithMeasure = receiptService->getAllIngredientsWithMeasure();
     AddProductWindow->addIngredientToComboBox(ingredientsWithMeasure);
 
     connect(
@@ -85,7 +87,7 @@ void ViewService::on_showRemoveProductsWindow()
     qDebug() << "void ViewService::on_showAddProductsWindow()";
     AddProductWindow = new AddProductToFridgeWindow();
 
-    QStringList ingredientsWithMeasure = service->getAllUserProductNamesWithMeasure();
+    QStringList ingredientsWithMeasure = receiptService->getAllUserProductNamesWithMeasure();
     AddProductWindow->addIngredientToComboBox(ingredientsWithMeasure);
 
     connect(
@@ -101,7 +103,7 @@ void ViewService::addProductToFridgeOkHandler(QString product, int count)
     qDebug() << "void ViewService::addProductToFridgeOkHandler(QString product, int count)";
     qDebug() << product << QString::number(count);
     QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
-    service->insertProductToFridge(trimmedProduct, count);
+    receiptService->insertProductToFridge(trimmedProduct, count);
     on_getAllUserProducts();
 }
 
@@ -110,7 +112,7 @@ void ViewService::removeProductToFridgeOkHandler(QString product, int count)
     qDebug() << "ViewService::removeProductToFridgeOkHandler(QString product, int count)";
     qDebug() << product << QString::number(count);
     QString trimmedProduct = product.mid(0, product.indexOf("(", 0, Qt::CaseInsensitive)-1);
-    QString message = service->removeProductFromFridge(trimmedProduct, count);
+    QString message = receiptService->removeProductFromFridge(trimmedProduct, count);
     if(message.isEmpty()) {
         on_getAllUserProducts();
     } else {
@@ -121,7 +123,8 @@ void ViewService::removeProductToFridgeOkHandler(QString product, int count)
 void ViewService::on_getAvailableReceipes()
 {
     qDebug() << "void ViewService::on_getAvailableReceipes()";
-    QList<AvailableReceiptDto> availableReceipts = service->getAvailableReceipts();
+    //получаем коллекцию доступных рецептов
+    QList<AvailableReceiptDto> availableReceipts = receiptService->getAvailableReceipts();
 
     window->cleanAvailableReceiptsTable();
 
@@ -134,7 +137,7 @@ void ViewService::on_getAvailableReceipes()
 void ViewService::on_letsCook(int receiptId, int count)
 {
     qDebug() << "void ViewService::on_letsCook(int receiptId, int count)";
-    service->cookReceipts(receiptId, count);
+    receiptService->cookReceipts(receiptId, count);
 
     on_getAvailableReceipes();
 
